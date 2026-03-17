@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🔱 Trishul - Study Hub</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#070b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+:root{--bg:#070b14;--pn:#111827;--ln:#1e293b;--tx:#f3f4f6;--dm:#94a3b8;--ac:#8b5cf6;--gd:#f59e0b;--gn:#10b981;--bl:#3b82f6;--rd:#ef4444;--cy:#06b6d4;--nav:68px;--r:16px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:var(--tx);height:100vh;height:100dvh;display:flex;justify-content:center;overflow:hidden}
+::-webkit-scrollbar{display:none}
+
+/* DESKTOP/MOBILE RESPONSIVE WRAPPER */
+.app-wrap{width:100%;max-width:480px;height:100%;background:var(--bg);position:relative;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(139,92,246,.1);background-image:radial-gradient(circle at 10% 10%,rgba(139,92,246,.05),transparent 40%),radial-gradient(circle at 90% 90%,rgba(6,182,212,.05),transparent 40%)}
+
+/* HEADER */
+.hdr{padding:14px 18px;background:rgba(7,11,20,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:12px;z-index:20;flex-shrink:0}
+.av{width:44px;height:44px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--ac),var(--gd));cursor:pointer;flex-shrink:0}
+.av-in{width:100%;height:100%;border-radius:50%;background:var(--pn);display:flex;align-items:center;justify-content:center;font-size:1.3rem;overflow:hidden}
+.av-in img{width:100%;height:100%;object-fit:cover}
+.h-info{flex:1;min-width:0}
+.h-name{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-rank{font-size:.7rem;color:var(--gd)}
+.h-btn{background:rgba(255,255,255,.05);border:1px solid var(--ln);border-radius:12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:.2s}
+.h-btn:active{transform:scale(.9)}
+
+/* MAIN CONTENT */
+.mn{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px;padding-bottom:calc(var(--nav) + 20px);scroll-behavior:smooth}
+.v{display:none;animation:fade .3s ease}.v.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* BOTTOM NAV */
+.bnav{position:absolute;bottom:0;left:0;right:0;height:var(--nav);background:rgba(11,16,28,.95);backdrop-filter:blur(12px);border-top:1px solid var(--ln);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:30}
+.bi{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--dm);font-size:.65rem;cursor:pointer;transition:.2s;user-select:none}
+.bi .ic{font-size:1.4rem;transition:.2s}
+.bi.on{color:var(--tx)}
+.bi.on .ic{transform:translateY(-2px);filter:drop-shadow(0 2px 8px var(--ac))}
+.bi.don{color:var(--gd)}.bi.don.on .ic{filter:drop-shadow(0 2px 8px var(--gd))}
+
+/* UI COMPONENTS */
+.cd{background:rgba(17,24,39,.6);border:1px solid var(--ln);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.cd h3{font-size:.95rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--tx)}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.st-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px 8px;text-align:center}
+.st-val{font-size:1.4rem;font-weight:800;margin-bottom:4px}.st-lbl{font-size:.7rem;color:var(--dm)}
+.rw{display:flex;align-items:center;gap:10px}
+.bar-wrap{width:100%;height:8px;background:rgba(0,0,0,.3);border-radius:99px;overflow:hidden;border:1px solid var(--ln)}
+.bar-in{height:100%;border-radius:99px;transition:width .5s ease}
+
+/* INPUTS & BUTTONS */
+input,select,textarea{width:100%;background:rgba(0,0,0,.2);border:1px solid var(--ln);color:var(--tx);padding:12px 14px;border-radius:12px;font-size:.9rem;outline:none;margin-bottom:12px;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+label{display:block;font-size:.75rem;color:var(--dm);margin-bottom:6px;font-weight:500}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.96)}.btn-g{background:rgba(255,255,255,.05);border:1px solid var(--ln);color:var(--tx)}.btn-or{background:linear-gradient(135deg,var(--gd),#ea580c)}
+.btn-sm{padding:6px 12px;font-size:.75rem;border-radius:8px;width:auto}
+
+/* MODALS */
+.mod{position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:100;display:none;align-items:flex-end}
+.mod.on{display:flex}
+.mod-in{width:100%;background:var(--bg);border-top:1px solid var(--ac);border-radius:24px 24px 0 0;padding:24px;max-height:85vh;overflow-y:auto;animation:slUp .3s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes slUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mod-bar{width:40px;height:5px;background:rgba(255,255,255,.2);border-radius:10px;margin:0 auto 20px}
+
+/* SPECIFIC UI */
+.ring{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 30px rgba(6,182,212,.1)}
+.ring-in{width:108px;height:108px;background:var(--pn);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.tmr-box{text-align:center;padding:24px;background:radial-gradient(circle,rgba(139,92,246,.1),transparent);border:2px solid var(--ac);border-radius:24px}
+.tmr-d{font-size:3.5rem;font-weight:800;font-family:'Courier New',monospace;color:var(--gd);letter-spacing:2px;margin:10px 0}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dy{padding:8px 0;background:rgba(255,255,255,.03);border:1px solid transparent;border-radius:10px;font-size:.85rem;cursor:pointer;position:relative}
+.dy.out{opacity:.3}.dy.td{border-color:var(--bl)}.dy.sel{background:rgba(139,92,246,.2);border-color:var(--ac)}
+.dot{width:4px;height:4px;border-radius:50%;display:inline-block;margin:0 1px}
+.qc{background:rgba(0,0,0,.2);border:1px solid var(--ln);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.tk{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);padding:10px;border-radius:12px;margin-bottom:8px}
+.tk.dn{opacity:.5;text-decoration:line-through}
+.don-hero{text-align:center;padding:30px 20px;background:linear-gradient(180deg,rgba(245,158,11,.1),transparent);border-radius:20px;border:1px solid rgba(245,158,11,.2);margin-bottom:20px}
+.upi-box{background:#000;border:2px dashed var(--gd);border-radius:16px;padding:20px;text-align:center}
+.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.s-num{width:28px;height:28px;background:var(--gd);color:#000;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.8rem}
+.toast{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:12px 24px;border-radius:99px;font-size:.85rem;font-weight:600;z-index:999;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:tIn .3s;pointer-events:none}
+@keyframes tIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+  
+  <div class="hdr">
+    <div class="av" onclick="mod('profM',1)"><div class="av-in" id="hAv">🧑‍🎓</div></div>
+    <div class="h-info">
+      <div class="h-name" id="hNm">Student</div>
+      <div class="h-rank" id="hRk">🔱 SSC CGL Aspirant</div>
+    </div>
+    <div class="h-btn" onclick="mod('setM',1)">⚙️</div>
+  </div>
+
+  <div class="mn">
+    <div id="v-dash" class="v on"></div>
+    <div id="v-focus" class="v"></div>
+    <div id="v-cal" class="v"></div>
+    <div id="v-plan" class="v"></div>
+    <div id="v-don" class="v"></div>
+  </div>
+
+  <div class="bnav">
+    <div class="bi on" onclick="nav('dash',this)"><div class="ic">🏠</div>Home</div>
+    <div class="bi" onclick="nav('focus',this)"><div class="ic">🧠</div>Focus</div>
+    <div class="bi" onclick="nav('cal',this)"><div class="ic">📅</div>Exams</div>
+    <div class="bi" onclick="nav('plan',this)"><div class="ic">📋</div>Plan</div>
+    <div class="bi don" onclick="nav('don',this)"><div class="ic">💝</div>Support</div>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div class="mod" id="profM" onclick="if(event.target===this)mod('profM',0)">
+    <div class="mod-in"><div class="mod-bar"></div>
+      <h3 style="margin-bottom:16px;font-size:1.1rem">🔱 Profile Setup</h3>
+      <div style="text-align:center;margin-bottom:16px">
+        <div class="av" style="width:80px;height:80px;margin:0 auto 10px"><div class="av-in" id="mAv">🧑‍🎓</div></div>
+        <label class="btn btn-g btn-sm" style="display:inline-block">📷 Upload Photo<input type="file" onchange="cmpImg(this,'av')" hidden accept="image/*"></label>
+      </div>
+      <label>Name</label><input id="pNm" placeholder="Your Name">
+      <label>Target / Rank</label>
+      <select id="pTk"><option>🔱 SSC CGL Aspirant</option><option>🏦 Bank PO Aspirant</option><option>🚂 Railway Aspirant</option><option>🎯 State PCS</option></select>
+      <label>Daily Study Goal (Hours)</label><input id="pGl" type="number" min="1" max="18">
+      <label>Your Motivation Line</label><input id="pBio" placeholder="E.g. Dream big, work hard">
+      <div class="grid-2"><button class="btn btn-g" onclick="mod('profM',0)">Cancel</button><button class="btn" onclick="savProf()">💾 Save</button></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="mod" id="setM" onclick="if(event.target===this)mod('setM',0)">
+    <div class="mod-in"><div class="mod-bar"></div>
+      <h3 style="margin-bottom:16px;font-size:1.1rem">⚙️ Settings & Backup</h3>
+      <div class="cd">
+        <label>🖼️ Custom App Wallpaper</label>
+        <div class="rw"><input type="file" onchange="cmpImg(this,'wp')" accept="image/*" style="margin:0"><button class="btn btn-g btn-sm" onclick="clrWp()">Reset</button></div>
+        <div style="font-size:.65rem;color:var(--dm);margin-top:6px">* Images are auto-compressed to save phone storage.</div>
+      </div>
+      <div class="cd">
+        <h3 style="margin-bottom:8px">💾 Data Backup (Safe & Offline)</h3>
+        <div style="font-size:.75rem;color:var(--dm);margin-bottom:12px">Your data stays on your phone. Export to move to a new device.</div>
+        <div class="grid-2">
+          <button class="btn" onclick="expD()">⬇️ Export</button>
+          <label class="btn btn-g" style="margin:0;display:flex">⬆️ Import<input type="file" onchange="impD(this)" accept=".json" hidden></label>
+        </div>
+      </div>
+      <button class="btn btn-g" onclick="mod('setM',0)">Close</button>
+    </div>
+  </div>
+
+  <!-- DONATE EDIT MODAL -->
+  <div class="mod" id="donM" onclick="if(event.target===this)mod('donM',0)">
+    <div class="mod-in"><div class="mod-bar"></div>
+      <h3 style="margin-bottom:16px;font-size:1.1rem">💝 Setup Support Page</h3>
+      <label>UPI ID (Google Pay / PhonePe / Paytm)</label>
+      <input id="dUpi" placeholder="e.g. 9876543210@ybl">
+      <label>Registered Name on UPI</label>
+      <input id="dUnm" placeholder="e.g. Abhishek Sharma">
+      <label>Your Goal/Mission</label>
+      <input id="dGl" placeholder="e.g. Preparing for SSC CGL 2025">
+      <label>Message for Supporters</label>
+      <textarea id="dMsg" rows="3" placeholder="Help me buy books and mock tests..."></textarea>
+      <div class="grid-2"><button class="btn btn-g" onclick="mod('donM',0)">Cancel</button><button class="btn btn-or" onclick="savDon()">💾 Save Page</button></div>
+    </div>
+  </div>
+
+  <div id="toastBox"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id), eS=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const now=new Date(), pT=t=>{if(!t)return 0;const[h,m]=t.split(':');return h*60+parseInt(m)};
+
+// DEFAULT STATE (Bug-free hydration)
+const defState = {
+  prof: { nm:'Student', rk:'🔱 SSC CGL Aspirant', bio:'Focus determines reality', gl:8, av:null },
+  don: { upi:'', unm:'', gl:'', msg:'' },
+  sch: [
+    {s:'06:00',e:'08:00',t:'Morning Routine & Yoga',c:'Meditation'},
+    {s:'08:00',e:'10:30',t:'Maths Practice',c:'Study'},
+    {s:'10:30',e:'12:00',t:'Reasoning',c:'Study'},
+    {s:'12:00',e:'13:00',t:'Lunch Break',c:'Free'},
+    {s:'13:00',e:'16:00',t:'English Grammar',c:'Study'},
+    {s:'16:00',e:'18:00',t:'Rest & Free Time',c:'Free'},
+    {s:'18:00',e:'21:00',t:'Static GK & Current Affairs',c:'Study'},
+    {s:'21:00',e:'22:00',t:'Dinner',c:'Free'},
+    {s:'22:00',e:'06:00',t:'Sleep',c:'Sleep'}
+  ],
+  exm: [{n:'SSC CGL Tier 1', d:iso(new Date(now.getTime()+90*864e5)), c:'#8b5cf6'}],
+  tsk: [{id:1, t:'Complete Profit & Loss', p:2, s:0}],
+  qz: [],
+  med: {t:30, d:0},
+  fl: [0,0,0,0,0,0,0],
+  wp: null,
+  flags: []
+};
+
+let S = null;
+
+// LOAD & SAVE ENGINE
+function loadS(){
+  try{ const raw=localStorage.getItem('trishul_db'); S=raw?JSON.parse(raw):JSON.parse(JSON.stringify(defState)); }
+  catch(e){ S=JSON.parse(JSON.stringify(defState)); }
+  if(!S.flags) S.flags=[]; if(!S.fl) S.fl=[0,0,0,0,0,0,0];
+  applyWp();
+}
+function savS(){ localStorage.setItem('trishul_db', JSON.stringify(S)); }
+
+// IMAGE COMPRESSOR (Prevents localStorage QuotaExceededError)
+function cmpImg(inp, type){
+  const file = inp.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const cv = document.createElement('canvas');
+      const max = type==='av'? 200 : 800; // Avatar small, WP medium
+      let w = img.width, h = img.height;
+      if(w>max || h>max){ if(w>h){h*=max/w; w=max;} else{w*=max/h; h=max;} }
+      cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      const b64 = cv.toDataURL('image/jpeg', 0.6);
+      if(type==='av'){ S.prof.av=b64; savS(); uiHdr(); mod('profM',0); toast('Profile Photo Updated'); if(cTab==='don') rDon(); }
+      if(type==='wp'){ S.wp=b64; savS(); applyWp(); toast('Wallpaper Applied'); }
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(file);
+}
+function applyWp(){
+  const w = document.querySelector('.app-wrap');
+  if(S.wp) { w.style.backgroundImage = `linear-gradient(rgba(7,11,20,.88),rgba(7,11,20,.95)), url('${S.wp}')`; w.style.backgroundSize='cover'; }
+  else { w.style.backgroundImage = ''; }
+}
+function clrWp(){ S.wp=null; savS(); applyWp(); toast('Wallpaper Reset'); mod('setM',0); }
+
+// UI & NAVIGATION
+let cTab = 'dash';
+function nav(t, btn){
+  cTab=t; document.querySelectorAll('.v').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.bi').forEach(b=>b.classList.remove('on'));
+  $('v-'+t).classList.add('on'); if(btn)btn.classList.add('on');
+  if(t==='dash') rDash(); if(t==='focus') rFoc(); if(t==='cal') rCal(); if(t==='plan') rPln(); if(t==='don') rDon();
+}
+function mod(id, s){ $(id).classList[s?'add':'remove']('on'); if(s && id==='profM') setPForm(); if(s && id==='donM') setDForm(); }
+function toast(m){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=m;
+  $('toastBox').appendChild(t); setTimeout(()=>t.remove(), 2500);
+}
+
+// PROFILE
+function uiHdr(){
+  $('hNm').textContent=S.prof.nm; $('hRk').textContent=S.prof.rk;
+  $('hAv').innerHTML=S.prof.av?`<img src="${S.prof.av}">`:'🧑‍🎓';
+  if($('mAv')) $('mAv').innerHTML=S.prof.av?`<img src="${S.prof.av}">`:'🧑‍🎓';
+}
+function setPForm(){ $('pNm').value=S.prof.nm; $('pTk').value=S.prof.rk; $('pGl').value=S.prof.gl; $('pBio').value=S.prof.bio; }
+function savProf(){
+  S.prof.nm=$('pNm').value||'Student'; S.prof.rk=$('pTk').value; S.prof.gl=+$('pGl').value||8; S.prof.bio=$('pBio').value;
+  savS(); uiHdr(); mod('profM',0); if(cTab==='dash') rDash(); toast('Profile Saved');
+}
+
+// SUPPORT / DONATE
+function setDForm(){ $('dUpi').value=S.don.upi; $('dUnm').value=S.don.unm; $('dGl').value=S.don.gl; $('dMsg').value=S.don.msg; }
+function savDon(){
+  S.don.upi=$('dUpi').value; S.don.unm=$('dUnm').value; S.don.gl=$('dGl').value; S.don.msg=$('dMsg').value;
+  savS(); mod('donM',0); if(cTab==='don') rDon(); toast('Support Page Saved');
+}
+function cpUpi(){ if(!S.don.upi)return toast('UPI not set!'); navigator.clipboard.writeText(S.don.upi); toast('UPI ID Copied! ✅'); }
+
+// STATS CALCULATION
+function getSt(){
+  let s=0,sl=0,f=0,m=0;
+  S.sch.forEach(i=>{
+    let d=pT(i.e)-pT(i.s); if(d<=0)d+=1440;
+    if(i.c==='Study')s+=d; else if(i.c==='Sleep')sl+=d; else if(i.c==='Meditation')m+=d; else f+=d;
+  });
+  return {s,sl,f,m};
+}
+
+// DASHBOARD
+function rDash(){
+  const st=getSt(); const d=S.prof.gl*60; const p=Math.min(100, (st.s/d)*100).toFixed(0);
+  const mp=S.med.t?Math.min(100, (S.med.d/S.med.t)*100).toFixed(0):0;
+  const nX=S.exm.sort((a,b)=>new Date(a.d)-new Date(b.d)).find(e=>new Date(e.d)>=new Date(iso(now)));
+  let dl = nX ? Math.ceil((new Date(nX.d)-new Date(iso(now)))/864e5) : 0;
+
+  $('v-dash').innerHTML=`
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);padding:14px;border-radius:16px;margin-bottom:16px">
+      <div style="font-size:.8rem;color:var(--dm);font-style:italic">"${eS(S.prof.bio)}"</div>
+      <div style="font-weight:700;color:var(--gd);margin-top:4px">Ready to win, ${eS(S.prof.nm)}? 🚀</div>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="st-card"><div class="st-val" style="color:var(--ac)">${(st.s/60).toFixed(1)}h</div><div class="st-lbl">Study</div></div>
+      <div class="st-card"><div class="st-val" style="color:var(--gn)">${(st.sl/60).toFixed(1)}h</div><div class="st-lbl">Sleep</div></div>
+      <div class="st-card"><div class="st-val" style="color:var(--or)">${(st.f/60).toFixed(1)}h</div><div class="st-lbl">Free</div></div>
+      <div class="st-card"><div class="st-val" style="color:var(--cy)">${(st.m/60).toFixed(1)}h</div><div class="st-lbl">Meditate</div></div>
+    </div>
+
+    <div class="cd">
+      <h3>📊 Daily Target (${S.prof.gl}h)</h3>
+      <div class="bar-wrap"><div class="bar-in" style="width:${p}%;background:linear-gradient(90deg,var(--ac),var(--gd))"></div></div>
+      <div style="text-align:right;font-size:.75rem;color:var(--dm);margin-top:6px">${p}% Achieved</div>
+    </div>
+
+    <div class="cd">
+      <h3>🧘 Meditation Goal</h3>
+      <div class="ring" style="background:conic-gradient(var(--cy) 0% ${mp}%, rgba(0,0,0,.3) ${mp}% 100%)">
+        <div class="ring-in"><span style="font-size:1.6rem;font-weight:800;color:var(--cy)">${mp}%</span><span style="font-size:.7rem;color:var(--dm)">${S.med.d}/${S.med.t}m</span></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:10px">
+        <button class="btn btn-g btn-sm" onclick="adjM(-5)">-5</button><button class="btn btn-sm" onclick="adjM(5)">+5m</button>
+      </div>
+    </div>
+
+    ${nX?`<div class="cd" style="border-color:rgba(245,158,11,.3)">
+      <h3>🚩 Next Exam</h3>
+      <div class="rw" style="justify-content:space-between">
+        <div><b>${eS(nX.n)}</b><div style="font-size:.7rem;color:var(--dm)">${nX.d}</div></div>
+        <div style="text-align:right"><div style="font-size:2rem;font-weight:800;color:var(--gd)">${dl}</div><div style="font-size:.7rem;color:var(--dm)">Days Left</div></div>
+      </div>
+    </div>`:''}
+  `;
+}
+function adjM(v){ S.med.d=Math.max(0,S.med.d+v); savS(); rDash(); if(S.med.d>=S.med.t && v>0)toast('Meditation Goal Met! 🧘'); }
+
+// FOCUS TIMER
+let tmrI=null, sc=1500, rn=false, md='w', sess=0;
+function rFoc(){
+  $('v-focus').innerHTML=`
+    <div class="cd">
+      <div class="tmr-box">
+        <div style="font-size:.8rem;color:var(--dm);text-transform:uppercase" id="tmMd">${md==='w'?'🎯 Focus Session':'☕ Break Time'}</div>
+        <div class="tmr-d" id="tmDs">${fTm(sc)}</div>
+        <div class="rw" style="justify-content:center;margin-bottom:16px">
+          <button class="btn" style="width:120px" onclick="tgTmr()" id="tmBt">${rn?'Pause':'Start'}</button>
+          <button class="btn btn-g" style="width:auto" onclick="rsTmr()">↻</button>
+        </div>
+        <div style="font-size:.75rem;color:var(--dm)">Sessions Completed: <b style="color:var(--gd)">${sess}</b></div>
+      </div>
+    </div>
+    <div class="cd">
+      <h3>📈 7-Day Focus Heatmap</h3>
+      <div style="display:flex;align-items:flex-end;height:120px;gap:8px;padding-top:10px;border-bottom:1px solid var(--ln);margin-bottom:10px">
+        ${S.fl.map((v,i)=>`<div style="flex:1;background:var(--ac);border-radius:6px 6px 0 0;height:${Math.max(5,(v/Math.max(...S.fl,1))*100)}%;opacity:${i===now.getDay()?1:0.5}"></div>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--dm)">
+        ${['S','M','T','W','T','F','S'].map((d,i)=>`<div style="flex:1;text-align:center;color:${i===now.getDay()?'var(--gd)':''}">${d}</div>`).join('')}
+      </div>
+      <button class="btn btn-g btn-sm" style="width:100%;margin-top:16px" onclick="lgF()">+ Add 1 Hour Manually</button>
+    </div>
+  `;
+}
+function fTm(s){ return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+function tgTmr(){
+  if(rn){ clearInterval(tmrI); rn=false; }
+  else{ rn=true; tmrI=setInterval(tk,1000); }
+  upTmrUI();
+}
+function tk(){
+  sc--; if(sc<=0){ clearInterval(tmrI); rn=false; if(md==='w'){ sess++; md='b'; sc=300; toast('Break Time!'); }else{ md='w'; sc=1500; toast('Focus Time!'); } }
+  upTmrUI();
+}
+function rsTmr(){ clearInterval(tmrI); rn=false; md='w'; sc=1500; upTmrUI(); }
+function upTmrUI(){
+  if($('tmDs'))$('tmDs').textContent=fTm(sc);
+  if($('tmBt'))$('tmBt').textContent=rn?'Pause':'Start';
+  if($('tmMd'))$('tmMd').textContent=md==='w'?'🎯 Focus Session':'☕ Break Time';
+}
+function lgF(){ S.fl[now.getDay()]+=1; savS(); rFoc(); toast('1 Hour Logged!'); }
+
+// CALENDAR
+let cM=now.getMonth(), cY=now.getFullYear();
+function rCal(){
+  const dIM = new Date(cY, cM+1, 0).getDate();
+  const fD = new Date(cY, cM, 1).getDay();
+  let html='';
+  for(let i=0;i<fD;i++) html+=`<div class="dy out"></div>`;
+  for(let i=1;i<=dIM;i++){
+    let dt=iso(new Date(cY,cM,i));
+    let isT=(dt===iso(now))?'td':''; let isF=S.flags.includes(dt)?'sel':'';
+    let ex=S.exm.filter(e=>e.d===dt);
+    html+=`<div class="dy ${isT} ${isF}" onclick="tgFlg('${dt}')">${i}<br>${ex.map(e=>`<span class="dot" style="background:${e.c}"></span>`).join('')}</div>`;
+  }
+  
+  $('v-cal').innerHTML=`
+    <div class="cd">
+      <div class="rw" style="justify-content:space-between;margin-bottom:16px">
+        <h3>📅 Calendar</h3>
+        <div class="rw"><button class="btn btn-g btn-sm" onclick="cPv()">◀</button><div style="font-weight:700;width:100px;text-align:center">${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][cM]} ${cY}</div><button class="btn btn-g btn-sm" onclick="cNx()">▶</button></div>
+      </div>
+      <div class="cal" style="color:var(--dm);font-size:.7rem;margin-bottom:8px"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
+      <div class="cal">${html}</div>
+      <div style="font-size:.65rem;color:var(--dm);margin-top:10px;text-align:center">Tap a date to highlight it</div>
+    </div>
+    <div class="cd">
+      <h3>➕ Add Exam</h3>
+      <input id="eN" placeholder="Exam Name">
+      <input id="eD" type="date">
+      <button class="btn" onclick="addE()">Save Exam</button>
+      <div style="margin-top:16px">
+        ${S.exm.map((e,i)=>`<div class="qc"><div><b>${eS(e.n)}</b><div style="font-size:.7rem;color:var(--dm)">${e.d}</div></div><button class="btn-g btn-sm" onclick="dlE(${i})">✕</button></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+function cPv(){cM--;if(cM<0){cM=11;cY--;}rCal();} function cNx(){cM++;if(cM>11){cM=0;cY++;}rCal();}
+function tgFlg(d){ if(S.flags.includes(d)) S.flags=S.flags.filter(x=>x!==d); else S.flags.push(d); savS(); rCal(); }
+function addE(){ const n=$('eN').value, d=$('eD').value; if(n&&d){S.exm.push({n,d,c:'#38bdf8'}); savS(); rCal(); toast('Exam Added');} }
+function dlE(i){ S.exm.splice(i,1); savS(); rCal(); }
+
+// PLANNER
+function rPln(){
+  $('v-plan').innerHTML=`
+    <div class="cd">
+      <h3>📋 Task Board</h3>
+      <div class="rw" style="margin-bottom:12px"><input id="tIn" placeholder="New Task..." style="margin:0"><button class="btn" style="width:80px" onclick="addT()">Add</button></div>
+      <div style="font-size:.75rem;color:var(--dm);margin-bottom:6px">To Do:</div>
+      ${S.tsk.filter(t=>t.s===0).map(t=>`<div class="tk"><div style="flex:1">${eS(t.t)}</div><button class="btn btn-sm" onclick="dnT(${t.id})">✓</button><button class="btn-g btn-sm" onclick="rmT(${t.id})">✕</button></div>`).join('')||'<div style="color:var(--dm);font-size:.8rem;margin-bottom:10px">All caught up!</div>'}
+      <div style="font-size:.75rem;color:var(--gn);margin-bottom:6px;margin-top:16px">Done:</div>
+      ${S.tsk.filter(t=>t.s===1).map(t=>`<div class="tk dn"><div style="flex:1">${eS(t.t)}</div><button class="btn-g btn-sm" onclick="rmT(${t.id})">✕</button></div>`).join('')}
+    </div>
+    <div class="cd">
+      <h3>📝 Quick Notes</h3>
+      <textarea id="qn" rows="6" placeholder="Write formulas, rules, or thoughts here..." onblur="S.notes=this.value;savS();toast('Notes Saved')">${eS(S.notes||'')}</textarea>
+    </div>
+  `;
+}
+function addT(){ const v=$('tIn').value; if(!v)return; S.tsk.push({id:Date.now(), t:v, s:0}); savS(); rPln(); }
+function dnT(id){ S.tsk.find(x=>x.id===id).s=1; savS(); rPln(); }
+function rmT(id){ S.tsk=S.tsk.filter(x=>x.id!==id); savS(); rPln(); }
+
+// SUPPORT (UPI ONLY - NO QR)
+function rDon(){
+  $('v-don').innerHTML=`
+    <div class="don-hero">
+      <div style="font-size:3rem;margin-bottom:10px">🙏</div>
+      <h2 style="color:var(--gd);margin-bottom:8px">Support ${eS(S.prof.nm)}</h2>
+      <div style="font-size:.85rem;color:#f3f4f6;line-height:1.5">"${eS(S.don.msg || 'Help me focus on my preparation for government exams. Your support fuels my journey!')}"</div>
+      ${S.don.gl?`<div style="margin-top:12px;display:inline-block;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:8px;font-size:.75rem;border:1px solid rgba(255,255,255,.2)">🎯 Mission: ${eS(S.don.gl)}</div>`:''}
+    </div>
+
+    <div class="cd">
+      <h3>📲 Pay via UPI</h3>
+      ${S.don.upi ? `
+        <div class="upi-box">
+          <div style="font-size:.7rem;color:var(--dm);text-transform:uppercase;letter-spacing:1px">UPI ID</div>
+          <div style="font-size:1.1rem;font-weight:800;color:var(--tx);margin:8px 0;letter-spacing:1px;font-family:monospace">${eS(S.don.upi)}</div>
+          ${S.don.unm?`<div style="font-size:.75rem;color:var(--gd);margin-bottom:16px">Name: ${eS(S.don.unm)}</div>`:''}
+          <button class="btn btn-or" onclick="cpUpi()">📋 Copy UPI ID</button>
+        </div>
+        <div style="margin-top:20px">
+          <div class="step"><div class="s-num">1</div><div style="font-size:.85rem;color:var(--dm)">Open <b>GPay, PhonePe, Paytm, etc.</b></div></div>
+          <div class="step"><div class="s-num">2</div><div style="font-size:.85rem;color:var(--dm)">Tap <b>Pay to UPI ID</b> and Paste the ID.</div></div>
+          <div class="step"><div class="s-num">3</div><div style="font-size:.85rem;color:var(--dm)">Enter amount, add a note & confirm! 🎉</div></div>
+        </div>
+      ` : `
+        <div style="text-align:center;padding:20px;background:rgba(255,255,255,.05);border-radius:12px;border:1px dashed var(--dm)">
+          <div style="font-size:2rem;margin-bottom:10px">⚙️</div>
+          <div style="font-size:.85rem;color:var(--dm);margin-bottom:16px">You haven't set up your UPI details yet.</div>
+          <button class="btn" onclick="mod('donM',1)">Setup Support Page</button>
+        </div>
+      `}
+    </div>
+
+    ${S.don.upi ? `<button class="btn btn-g" style="margin-bottom:20px" onclick="mod('donM',1)">✏️ Edit Details</button>` : ''}
+  `;
+}
+
+// BACKUP & RESTORE
+function expD(){
+  const str = JSON.stringify(S);
+  const blb = new Blob([str], {type: 'application/json'});
+  const url = URL.createObjectURL(blb);
+  const a = document.createElement('a'); a.href=url; a.download=`Trishul_Backup_${iso(now)}.json`;
+  a.click(); URL.revokeObjectURL(url); toast('Backup Downloaded! ⬇️');
+}
+function impD(inp){
+  const file = inp.files[0]; if(!file)return;
+  const r = new FileReader();
+  r.onload=e=>{
+    try{ S=JSON.parse(e.target.result); savS(); loadS(); uiHdr(); applyWp(); mod('setM',0); nav('dash'); toast('Backup Restored! 🚀'); }
+    catch(err){ toast('Invalid Backup File ❌'); }
+  }; r.readAsText(file);
+}
+
+// INIT
+loadS(); uiHdr(); nav('dash');
+
+// SERVICE WORKER REGISTRATION (Offline Power)
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW Registered')).catch(()=>console.log('SW Failed'));
+  });
+}
+</script>
+</body>
+</html>
